@@ -61,29 +61,36 @@ class AIService
 
   # リフレーミング提案を生成
   def get_reframing(idea_content)
-    # Gemini が利用可能な場合は、OpenAI よりも先に（またはエラー時の代替として）検討
-    if @gemini_client
+    # Gemini を最優先
+    if @gemini_client && ENV['GOOGLE_API_KEY']
       begin
         return get_gemini_reframing(idea_content)
       rescue => e
-        puts "Gemini Error: #{e.message}. Falling back to OpenAI if available."
+        puts "Gemini Error: #{e.message}. Falling back to OpenAI."
       end
     end
 
-    return "APIキーが設定されていないため、提案を生成できません。OpenAI の 429 エラーが発生した場合は、Google Gemini の API キー設定もご検討ください。" unless @openai_client
+    return "APIキーが設定されていないか、Geminiが利用できません。管理画面で設定を確認してください。" unless @openai_client
 
     prompt = reframing_prompt(idea_content)
 
-    response = @openai_client.chat(
-      parameters: {
-        model: "gpt-4o",
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.7
-      }
-    )
-    response.dig("choices", 0, "message", "content")
-  rescue => e
-    "AI提案の生成中にエラーが発生しました: #{e.message}"
+    begin
+      response = @openai_client.chat(
+        parameters: {
+          model: "gpt-4o-mini", # コストと速度を優先
+          messages: [{ role: "user", content: prompt }],
+          temperature: 0.7
+        }
+      )
+      
+      if response.dig("error", "code") == "rate_limit_exceeded" || response["choices"].nil?
+        return "現在 OpenAI の API が混み合っています（429 Error）。Google Gemini の API キーを設定すると、このエラーを回避して高速に動作します。"
+      end
+
+      response.dig("choices", 0, "message", "content")
+    rescue => e
+      "AI提案の生成中にエラーが発生しました: #{e.message}"
+    end
   end
 
   private
