@@ -1,7 +1,7 @@
 #!/bin/sh
 # データベースの初期化（Volume が空の場合に実行）
 echo "Checking database..."
-bundle exec ruby db/init.rb
+bundle exec ruby init_db.rb
 
 echo "Starting application..."
 # アプリの起動
