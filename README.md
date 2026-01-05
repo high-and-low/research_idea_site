@@ -7,7 +7,7 @@
 ![Framework](https://img.shields.io/badge/Sinatra-4.2-green.svg)
 ![AI](https://img.shields.io/badge/AI-Gemini%20%2F%20GPT--4o-orange.svg)
 
-## 🌟 主な機能
+##　主な機能
 
 ### 1. アイデア・マネジメント
 
@@ -31,7 +31,7 @@
 - **Docker / Fly.io** へのデプロイに対応
 - **GitHub Actions** による自動デプロイパイプライン
 
-## 🛠 技術スタック
+## 技術スタック
 
 - **Backend**: Ruby 3.3, Sinatra
 - **Database**: SQLite3
@@ -39,7 +39,7 @@
 - **AI**: Google Gemini API (Primary), OpenAI API (Fallback/Embedding)
 - **Deployment**: Fly.io, Docker
 
-## 🚀 セットアップ
+## セットアップ
 
 ### ローカルでの起動
 
@@ -72,10 +72,6 @@
     ```
 
     `http://localhost:4567` にアクセスします。
-
-### デプロイ (Fly.io)
-
-詳細な手順は [DEPLOY_GUIDE.md](.gemini/antigravity/brain/ec836d7b-21e5-4723-8995-44491dadb06f/DEPLOY_GUIDE.md) を参照してください。
 
 ## 📁 ディレクトリ構造
 
