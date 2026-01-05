@@ -9,6 +9,7 @@ RUN apk add --no-cache \
     build-base \
     sqlite-dev \
     sqlite-libs \
+    curl-dev \
     tzdata
 
 # Gemfile と Gemfile.lock をコピー
