@@ -7,7 +7,7 @@
 ![Framework](https://img.shields.io/badge/Sinatra-4.2-green.svg)
 ![AI](https://img.shields.io/badge/AI-Gemini%20%2F%20GPT--4o-orange.svg)
 
-##　主な機能
+## 主な機能
 
 ### 1. アイデア・マネジメント
 
