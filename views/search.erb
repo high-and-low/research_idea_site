@@ -1,0 +1,32 @@
+<div class="mb-12">
+    <h1 class="text-3xl font-bold mb-4">Semantic Search</h1>
+    <form action="/search" method="GET" class="flex gap-4">
+        <input type="text" name="query" value="<%= h @query %>" 
+            class="flex-grow bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500"
+            placeholder="探したい着想や文脈を入力...">
+        <button type="submit" class="bg-slate-700 hover:bg-slate-600 px-8 rounded-xl font-bold transition">検索</button>
+    </form>
+</div>
+
+<% if @query %>
+    <h2 class="text-xl font-bold mb-6 text-slate-400">
+        「<%= h @query %>」に意味が近いアイデア
+    </h2>
+
+    <div class="space-y-6">
+        <% if @results.empty? %>
+            <p class="text-slate-500 text-center py-10 glass rounded-2xl">類似したアイテムが見つかりませんでした。</p>
+        <% else %>
+            <% @results.each do |result| %>
+                <div class="glass p-6 rounded-2xl border-l-4 border-sky-500">
+                    <div class="flex justify-between mb-2">
+                        <h3 class="text-lg font-bold"><%= h result['title'] %></h3>
+                        <span class="text-sky-400 font-mono text-sm">Score: <%= "#{(result['score'] * 100).round(1)}%" %></span>
+                    </div>
+                    <p class="text-slate-400 text-sm mb-4"><%= h result['content'] %></p>
+                    <a href="/reframing/<%= result['id'] %>" class="text-xs text-sky-500 hover:underline">このアイデアを基にリフレーミング →</a>
+                </div>
+            <% end %>
+        <% end %>
+    </div>
+<% end %>

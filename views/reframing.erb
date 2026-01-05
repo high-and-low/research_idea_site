@@ -1,0 +1,129 @@
+<div class="max-w-3xl mx-auto">
+    <div class="mb-2">
+        <a href="/" class="text-[10px] text-slate-500 hover:text-sky-400 transition">← Back to Dashboard</a>
+    </div>
+
+    <div class="glass p-3 rounded-xl mb-2 relative overflow-hidden">
+        <div class="absolute top-0 right-0 p-1.5 bg-purple-500/10 rounded-bl-xl">
+            <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+        </div>
+        
+        <h2 class="text-[9px] font-bold mb-1 text-slate-500 uppercase tracking-widest opacity-70">Source Idea</h2>
+        <div class="font-serif italic text-slate-300 leading-snug text-base mb-4 border-l-2 border-purple-500/30 pl-3">
+            「<%= h @idea['content'] %>」
+        </div>
+
+        <h2 class="text-lg font-bold mb-3 flex items-center">
+            <span class="gradient-text">Vision Shift Proposal</span>
+            <span class="ml-2 text-[8px] bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded uppercase tracking-tighter">AI Analysis</span>
+        </h2>
+
+        <div id="ai-response-container">
+            <!-- Loading State -->
+            <div id="loading-state" class="text-center py-6">
+                <div class="inline-block w-5 h-5 border-2 border-purple-500/20 border-t-purple-500 rounded-full animate-spin mb-2"></div>
+                <p class="text-slate-500 text-[10px] uppercase tracking-widest animate-pulse">Processing...</p>
+            </div>
+            
+            <!-- Result State -->
+            <div id="result-content" class="hidden text-slate-200 text-base leading-relaxed space-y-3">
+            </div>
+
+            <!-- Error State -->
+            <div id="error-state" class="hidden text-red-400 text-xs p-2 bg-red-400/5 rounded border border-red-400/10">
+                Failed to generate proposal. Please try again.
+            </div>
+        </div>
+    </div>
+
+    <div id="action-buttons" class="hidden text-right fade-in px-1">
+        <button onclick="window.print()" class="text-slate-500 hover:text-slate-300 text-[10px] uppercase tracking-widest transition border-b border-transparent hover:border-slate-500 pb-0.5">
+            Export as PDF/Print
+        </button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const ideaId = "<%= @idea['id'] %>";
+    const loadingState = document.getElementById('loading-state');
+    const resultContent = document.getElementById('result-content');
+    const errorState = document.getElementById('error-state');
+    const actionButtons = document.getElementById('action-buttons');
+
+    try {
+        const response = await fetch(`/api/reframing/${ideaId}`);
+        const data = await response.json();
+
+        if (data.error) throw new Error(data.error);
+
+        let rawText = data.reframing;
+        const sections = rawText.split(/(?=【)/);
+        let htmlContent = '';
+
+        sections.forEach(section => {
+            if (!section.trim()) return;
+            
+            const match = section.match(/【(.*?)】([\s\S]*)/);
+            if (match) {
+                const title = match[1];
+                const body = match[2].trim();
+                
+                htmlContent += `
+                    <div class="fade-in border-t border-slate-700/30 pt-2 first:border-t-0 first:pt-0">
+                        <div class="inline-block text-[9px] font-bold text-sky-400 uppercase tracking-widest mb-1 px-1.5 py-0.5 bg-sky-400/5 rounded">
+                            ${title}
+                        </div>
+                        <div class="text-slate-300 text-base custom-markdown-container px-1">
+                            ${marked.parse(body)}
+                        </div>
+                    </div>
+                `;
+            } else {
+                htmlContent += `
+                    <div class="fade-in text-slate-300 text-base custom-markdown-container px-1">
+                        ${marked.parse(section)}
+                    </div>
+                `;
+            }
+        });
+        
+        loadingState.classList.add('hidden');
+        resultContent.innerHTML = htmlContent;
+        resultContent.classList.remove('hidden');
+        actionButtons.classList.remove('hidden');
+    } catch (error) {
+        console.error('AI Fetch Error:', error);
+        loadingState.classList.add('hidden');
+        errorState.classList.remove('hidden');
+    }
+});
+</script>
+
+<style>
+/* Remove default prose-like margins from marked output to keep it tight */
+.custom-markdown-container p { margin-top: 0.25rem; margin-bottom: 0.25rem; }
+.custom-markdown-container ul, .custom-markdown-container ol { margin-top: 0.25rem; margin-bottom: 0.25rem; padding-left: 1rem; }
+.custom-markdown-container li { margin-bottom: 0.125rem; }
+.custom-markdown-container h1, .custom-markdown-container h2, .custom-markdown-container h3 { 
+    font-size: 1rem; font-weight: bold; margin-top: 0.5rem; margin-bottom: 0.25rem; color: #bae6fd; 
+}
+</style>
+
+<style>
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: .5; }
+}
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+.fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>

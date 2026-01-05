@@ -1,0 +1,45 @@
+<div class="flex justify-between items-end mb-12">
+    <div>
+        <h1 class="text-4xl font-bold mb-2">My Ideas</h1>
+        <p class="text-slate-400">現在蓄積されている研究の種</p>
+    </div>
+    <a href="/new" class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 px-6 rounded-lg transition shadow-lg shadow-sky-900/20">
+        + 新しい着想
+    </a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <% if @ideas.empty? %>
+        <div class="col-span-full py-20 text-center glass rounded-2xl">
+            <p class="text-slate-500 mb-4 text-lg">まだアイデアがありません。</p>
+            <a href="/new" class="text-sky-400 hover:underline">最初のアイデアを登録しましょう</a>
+        </div>
+    <% else %>
+        <% @ideas.each do |idea| %>
+            <div class="glass p-6 rounded-2xl hover:scale-[1.02] transition duration-300">
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-sky-100"><%= h idea['title'] %></h3>
+                    <span class="text-xs text-slate-500"><%= idea['created_at'].split(' ').first %></span>
+                </div>
+                <p class="text-slate-300 line-clamp-3 mb-6 leading-relaxed">
+                    <%= h idea['content'] %>
+                </p>
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <% (idea['tags'] || "").split(',').each do |tag| %>
+                        <span class="bg-slate-800 text-slate-400 text-[10px] px-2 py-1 rounded border border-slate-700">#<%= h tag %></span>
+                    <% end %>
+                </div>
+                <div class="flex space-x-4 border-t border-slate-700 pt-4">
+                    <a href="/search?query=<%= URI.encode_www_form_component(idea['content']) %>" class="text-xs text-slate-400 hover:text-sky-400 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        類似検索
+                    </a>
+                    <a href="/reframing/<%= idea['id'] %>" class="text-xs text-slate-400 hover:text-purple-400 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        リフレーミング
+                    </a>
+                </div>
+            </div>
+        <% end %>
+    <% end %>
+</div>

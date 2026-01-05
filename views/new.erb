@@ -1,0 +1,30 @@
+<div class="max-w-2xl mx-auto">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold mb-2">Record New Idea</h1>
+        <p class="text-slate-400">断片的な思考でも構いません。まずは言葉にしましょう。</p>
+    </div>
+
+    <form action="/ideas" method="POST" class="glass p-8 rounded-2xl space-y-6">
+        <input type="hidden" name="authenticity_token" value="<%= Rack::Protection::AuthenticityToken.token(session) %>">
+        
+        <div>
+            <label for="title" class="block text-sm font-semibold mb-2 text-slate-300">タイトル</label>
+            <input type="text" id="title" name="title" required
+                class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
+                placeholder="例: 電気刺激を用いた触覚プレゼンテーションの拡張">
+        </div>
+
+        <div>
+            <label for="content" class="block text-sm font-semibold mb-2 text-slate-300">内容・詳細</label>
+            <textarea id="content" name="content" rows="8" required
+                class="w-full bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
+                placeholder="アイデアの詳細を入力してください。技術タグ（例: #Arduino）を混ぜると自動抽出されます。"></textarea>
+        </div>
+
+        <div class="pt-4">
+            <button type="submit" class="w-full bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-bold py-4 rounded-xl shadow-lg transition-all active:scale-[0.98]">
+                アイデアを保存して解析
+            </button>
+        </div>
+    </form>
+</div>

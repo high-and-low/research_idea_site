@@ -1,0 +1,24 @@
+# 環境変数
+.env
+.env.local
+.env.production
+
+# データベース
+db/*.sqlite3
+db/test_*.sqlite3
+
+# ログ
+*.log
+
+# 一時ファイル
+tmp/
+
+# macOS
+.DS_Store
+
+# Ruby
+*.gem
+*.rbc
+
+# テスト
+coverage/
